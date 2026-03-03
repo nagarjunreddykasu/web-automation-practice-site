@@ -1,0 +1,2215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>Automation Practice Hub</title>
+	<style>
+		/* ===== CSS Variables ===== */
+		:root {
+			--bg: #f0f4f8;
+			--card: #ffffff;
+			--text: #1e293b;
+			--muted: #64748b;
+			--line: #cbd5e1;
+			--accent: #2563eb;
+			--accent-dark: #1e40af;
+			--accent-soft: #dbeafe;
+			--success: #16a34a;
+			--danger: #dc2626;
+			--warning: #f59e0b;
+			--info: #0ea5e9;
+			--nav-bg: linear-gradient(135deg, #0f172a 0%, #1e3a8a 50%, #312e81 100%);
+			--radius: 0.5rem;
+			--shadow: 0 4px 16px rgba(15, 23, 42, 0.08);
+			--shadow-lg: 0 10px 30px rgba(15, 23, 42, 0.12);
+		}
+
+		* { box-sizing: border-box; margin: 0; padding: 0; }
+
+		body {
+			font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+			background: var(--bg);
+			color: var(--text);
+			line-height: 1.6;
+		}
+
+		/* ===== Header + Horizontal Nav ===== */
+		.topbar {
+			background: var(--nav-bg);
+			box-shadow: var(--shadow-lg);
+			position: sticky;
+			top: 0;
+			z-index: 100;
+		}
+
+		.topbar-inner {
+			max-width: 1320px;
+			margin: 0 auto;
+			padding: 0 1rem;
+		}
+
+		.topbar-brand {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			padding: 0.75rem 0;
+		}
+
+		.topbar-brand h1 {
+			color: #ffffff;
+			font-size: 1.2rem;
+			font-weight: 700;
+			letter-spacing: -0.01em;
+		}
+
+		.topbar-brand h1 span {
+			color: #93c5fd;
+			font-weight: 400;
+		}
+
+		/* Contact info in header */
+		.topbar-contact {
+			display: flex;
+			align-items: center;
+			gap: 1.25rem;
+			margin-left: auto;
+			margin-right: 1rem;
+		}
+		.topbar-contact a {
+			color: #93c5fd;
+			font-size: 0.82rem;
+			text-decoration: none;
+			display: flex;
+			align-items: center;
+			gap: 0.35rem;
+			transition: color 0.2s;
+			white-space: nowrap;
+		}
+		.topbar-contact a:hover {
+			color: #ffffff;
+		}
+		.topbar-contact .contact-icon {
+			font-size: 1rem;
+		}
+
+		/* Hamburger toggle for mobile */
+		.menu-toggle {
+			display: none;
+			background: none;
+			border: 1px solid rgba(255,255,255,0.25);
+			color: #fff;
+			padding: 0.4rem 0.6rem;
+			border-radius: var(--radius);
+			font-size: 1.3rem;
+			cursor: pointer;
+		}
+
+		.nav-menu {
+			display: flex;
+			list-style: none;
+			gap: 0.25rem;
+			padding-bottom: 0.5rem;
+			overflow-x: auto;
+			scrollbar-width: thin;
+		}
+
+		.nav-menu a {
+			display: flex;
+			align-items: center;
+			gap: 0.4rem;
+			text-decoration: none;
+			color: #cbd5e1;
+			padding: 0.5rem 0.75rem;
+			border-radius: var(--radius);
+			font-size: 0.88rem;
+			font-weight: 500;
+			white-space: nowrap;
+			transition: all 0.2s ease;
+			border: 1px solid transparent;
+		}
+
+		.nav-menu a .nav-icon {
+			font-size: 1.05rem;
+		}
+
+		.nav-menu a:hover {
+			background: rgba(255, 255, 255, 0.12);
+			color: #ffffff;
+			border-color: rgba(255,255,255,0.15);
+		}
+
+		.nav-menu a.active {
+			background: rgba(255, 255, 255, 0.2);
+			color: #ffffff;
+			font-weight: 600;
+			border-color: rgba(255,255,255,0.3);
+			box-shadow: 0 0 0 1px rgba(147,197,253,0.25);
+		}
+
+		/* ===== Main Content ===== */
+		.main-wrap {
+			max-width: 1320px;
+			margin: 0 auto;
+			padding: 1.25rem 1rem 2rem;
+		}
+
+		.content-area {
+			background: var(--card);
+			border: 1px solid var(--line);
+			border-radius: var(--radius);
+			padding: 1.75rem;
+			min-height: 75vh;
+			box-shadow: var(--shadow);
+		}
+
+		/* Pages */
+		.page-section { display: none; }
+		.page-section.active { display: block; animation: fadeUp 0.3s ease; }
+
+		@keyframes fadeUp {
+			from { opacity: 0; transform: translateY(8px); }
+			to   { opacity: 1; transform: translateY(0); }
+		}
+
+		.page-section h2 {
+			font-size: 1.4rem;
+			margin-bottom: 1.25rem;
+			padding-bottom: 0.6rem;
+			border-bottom: 3px solid var(--accent);
+			display: flex;
+			align-items: center;
+			gap: 0.5rem;
+		}
+
+		.page-section h2 .sec-icon { font-size: 1.3rem; }
+
+		/* ===== Shared Form Styles ===== */
+		.form-group { margin-bottom: 1rem; }
+
+		.form-group label {
+			display: block;
+			font-weight: 600;
+			margin-bottom: 0.3rem;
+			font-size: 0.92rem;
+		}
+
+		.form-group input,
+		.form-group select,
+		.form-group textarea {
+			width: 100%;
+			max-width: 420px;
+			padding: 0.55rem 0.7rem;
+			border: 1px solid var(--line);
+			border-radius: var(--radius);
+			font-size: 0.95rem;
+			font-family: inherit;
+			transition: border-color 0.2s, box-shadow 0.2s;
+		}
+
+		.form-group input:focus,
+		.form-group select:focus,
+		.form-group textarea:focus {
+			outline: none;
+			border-color: var(--accent);
+			box-shadow: 0 0 0 3px rgba(37,99,235,0.15);
+		}
+
+		.btn {
+			display: inline-flex;
+			align-items: center;
+			gap: 0.35rem;
+			padding: 0.55rem 1.2rem;
+			border: none;
+			border-radius: var(--radius);
+			font-size: 0.92rem;
+			cursor: pointer;
+			font-family: inherit;
+			font-weight: 500;
+			transition: transform 0.1s, box-shadow 0.15s, opacity 0.15s;
+		}
+
+		.btn:hover { opacity: 0.9; box-shadow: 0 2px 8px rgba(0,0,0,0.12); }
+		.btn:active { transform: scale(0.97); }
+
+		.btn-primary   { background: var(--accent); color: #fff; }
+		.btn-success   { background: var(--success); color: #fff; }
+		.btn-danger    { background: var(--danger); color: #fff; }
+		.btn-secondary { background: #64748b; color: #fff; }
+		.btn-warning   { background: var(--warning); color: #1e293b; }
+		.btn-info      { background: var(--info); color: #fff; }
+		.btn-outline {
+			background: transparent;
+			border: 1.5px solid var(--accent);
+			color: var(--accent);
+		}
+
+		.form-row {
+			display: grid;
+			grid-template-columns: repeat(2, 1fr);
+			gap: 1rem;
+		}
+
+		.msg {
+			padding: 0.65rem 0.85rem;
+			border-radius: var(--radius);
+			margin-top: 0.75rem;
+			font-size: 0.9rem;
+		}
+
+		.msg-success { background: #dcfce7; color: #166534; border: 1px solid #86efac; }
+		.msg-error   { background: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
+		.msg-info    { background: #e0f2fe; color: #075985; border: 1px solid #7dd3fc; }
+
+		/* ===== Checkbox styles ===== */
+		.checkbox-list { list-style: none; }
+
+		.checkbox-list li {
+			padding: 0.55rem 0.5rem;
+			border-bottom: 1px solid #f1f5f9;
+			border-radius: var(--radius);
+			transition: background 0.15s;
+		}
+
+		.checkbox-list li:hover { background: #f8fafc; }
+
+		.checkbox-list label {
+			cursor: pointer;
+			display: flex;
+			align-items: center;
+			gap: 0.55rem;
+			font-size: 0.95rem;
+		}
+
+		.checkbox-list input[type="checkbox"] {
+			width: 18px; height: 18px; accent-color: var(--accent);
+		}
+
+		.cb-output {
+			margin-top: 1rem;
+			padding: 0.75rem;
+			background: #eff6ff;
+			border: 1px solid #bfdbfe;
+			border-radius: var(--radius);
+		}
+
+		/* ===== Table styles ===== */
+		.data-table {
+			width: 100%;
+			border-collapse: collapse;
+			margin-top: 0.75rem;
+			font-size: 0.92rem;
+		}
+
+		.data-table th,
+		.data-table td {
+			padding: 0.65rem 0.8rem;
+			text-align: left;
+			border: 1px solid #e2e8f0;
+		}
+
+		.data-table th {
+			background: linear-gradient(135deg, #1e3a8a, #312e81);
+			color: #fff;
+			font-weight: 600;
+		}
+
+		.data-table tr:nth-child(even) { background: #f8fafc; }
+		.data-table tr:hover { background: #e0e7ff; }
+
+		.table-controls {
+			display: flex;
+			gap: 0.5rem;
+			flex-wrap: wrap;
+			margin-bottom: 0.75rem;
+		}
+
+		.table-controls input {
+			padding: 0.5rem 0.65rem;
+			border: 1px solid var(--line);
+			border-radius: var(--radius);
+			font-size: 0.92rem;
+			min-width: 220px;
+		}
+
+		/* ===== Calculator ===== */
+		.calc-wrap {
+			display: inline-block;
+			background: #f1f5f9;
+			border: 1px solid var(--line);
+			border-radius: 0.75rem;
+			padding: 1rem;
+		}
+
+		.calc-grid {
+			display: grid;
+			grid-template-columns: repeat(4, 65px);
+			gap: 6px;
+		}
+
+		.calc-display {
+			grid-column: 1 / -1;
+			background: #0f172a;
+			color: #e2e8f0;
+			text-align: right;
+			padding: 0.85rem 1rem;
+			font-size: 1.5rem;
+			border-radius: var(--radius);
+			min-height: 52px;
+			word-break: break-all;
+			font-family: 'Courier New', monospace;
+		}
+
+		.calc-btn {
+			padding: 0.7rem;
+			font-size: 1.15rem;
+			border: 1px solid #e2e8f0;
+			border-radius: var(--radius);
+			background: #fff;
+			cursor: pointer;
+			text-align: center;
+			font-family: inherit;
+			transition: all 0.12s;
+		}
+
+		.calc-btn:hover { background: #e0e7ff; transform: scale(1.04); }
+		.calc-btn.op { background: #dbeafe; font-weight: 700; color: var(--accent-dark); }
+		.calc-btn.eq { background: var(--accent); color: #fff; font-weight: 700; }
+		.calc-btn.eq:hover { background: var(--accent-dark); }
+
+		/* ===== KMart ===== */
+		.kmart-search {
+			padding: 0.6rem 0.8rem;
+			border: 1px solid var(--line);
+			border-radius: var(--radius);
+			width: 100%;
+			max-width: 380px;
+			font-size: 0.95rem;
+			transition: border-color 0.2s, box-shadow 0.2s;
+		}
+
+		.kmart-search:focus {
+			outline: none;
+			border-color: var(--accent);
+			box-shadow: 0 0 0 3px rgba(37,99,235,0.15);
+		}
+
+		.product-grid {
+			display: grid;
+			grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+			gap: 1rem;
+			margin-top: 1rem;
+		}
+
+		.product-card {
+			border: 1px solid #e2e8f0;
+			border-radius: 0.75rem;
+			padding: 0;
+			text-align: center;
+			background: #fff;
+			overflow: hidden;
+			transition: transform 0.15s, box-shadow 0.15s;
+		}
+
+		.product-card:hover {
+			transform: translateY(-3px);
+			box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+		}
+
+		.product-img {
+			font-size: 3.5rem;
+			padding: 1rem 0 0.5rem;
+			background: linear-gradient(180deg, #f0fdf4 0%, #fff 100%);
+		}
+
+		.product-info { padding: 0 1rem 1rem; }
+		.product-info h4 { margin: 0 0 0.25rem; font-size: 0.95rem; }
+		.product-info .price { color: var(--success); font-weight: 700; font-size: 1.05rem; margin: 0.2rem 0 0.5rem; }
+
+		.qty-ctrl {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			gap: 0.5rem;
+		}
+
+		.qty-ctrl button {
+			width: 32px; height: 32px;
+			border: 1px solid var(--line);
+			border-radius: 50%;
+			cursor: pointer;
+			font-size: 1.1rem;
+			background: var(--card);
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			transition: background 0.15s;
+		}
+
+		.qty-ctrl button:hover { background: var(--accent-soft); }
+		.qty-ctrl span { min-width: 28px; text-align: center; font-weight: 700; font-size: 1.05rem; }
+
+		.cart-summary {
+			margin-top: 1.25rem;
+			padding: 1rem 1.25rem;
+			background: linear-gradient(135deg, #eff6ff, #f0fdf4);
+			border: 1px solid #bfdbfe;
+			border-radius: 0.75rem;
+			display: flex;
+			align-items: center;
+			gap: 1.5rem;
+			flex-wrap: wrap;
+			font-size: 1.05rem;
+		}
+
+		.cart-summary .cart-icon { font-size: 1.6rem; }
+
+		/* ===== Dropdowns ===== */
+		.dropdown-group {
+			display: grid;
+			grid-template-columns: repeat(2, 1fr);
+			gap: 1rem;
+			margin-top: 0.75rem;
+		}
+
+		.dropdown-group label {
+			display: block;
+			font-weight: 600;
+			margin-bottom: 0.3rem;
+		}
+
+		.dropdown-group select {
+			width: 100%;
+			padding: 0.55rem;
+			border: 1px solid var(--line);
+			border-radius: var(--radius);
+			font-size: 0.95rem;
+		}
+
+		.dd-output {
+			margin-top: 1rem;
+			padding: 0.75rem;
+			background: #eff6ff;
+			border: 1px solid #bfdbfe;
+			border-radius: var(--radius);
+		}
+
+		/* ===== Upload/Download ===== */
+		.upload-zone {
+			border: 2px dashed var(--line);
+			border-radius: 0.75rem;
+			padding: 2.5rem;
+			text-align: center;
+			margin-top: 0.75rem;
+			cursor: pointer;
+			transition: border-color 0.2s, background 0.2s;
+			background: #fafbfc;
+		}
+
+		.upload-zone:hover { border-color: var(--accent); background: #eff6ff; }
+		.upload-zone .upload-icon { font-size: 2.5rem; margin-bottom: 0.5rem; }
+
+		.file-list {
+			list-style: none;
+			margin: 1rem 0 0;
+		}
+
+		.file-list li {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			padding: 0.55rem 0.7rem;
+			border: 1px solid var(--line);
+			border-radius: var(--radius);
+			margin-bottom: 0.4rem;
+			background: #f8fafc;
+		}
+
+		/* ===== Interactions Page ===== */
+		.interact-grid {
+			display: grid;
+			grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+			gap: 1.25rem;
+			margin-top: 0.75rem;
+		}
+
+		.interact-card {
+			border: 1px solid #e2e8f0;
+			border-radius: 0.75rem;
+			padding: 1.25rem;
+			background: #f8fafc;
+		}
+
+		.interact-card h3 {
+			margin: 0 0 0.85rem;
+			font-size: 1.05rem;
+			display: flex;
+			align-items: center;
+			gap: 0.4rem;
+			color: var(--accent-dark);
+		}
+
+		.radio-group { display: grid; gap: 0.4rem; }
+
+		.radio-group label {
+			display: flex;
+			align-items: center;
+			gap: 0.5rem;
+			cursor: pointer;
+			padding: 0.4rem 0.5rem;
+			border-radius: var(--radius);
+			transition: background 0.15s;
+		}
+
+		.radio-group label:hover { background: #e0e7ff; }
+
+		.radio-group input[type="radio"] {
+			width: 18px; height: 18px; accent-color: var(--accent);
+		}
+
+		.radio-output {
+			margin-top: 0.75rem;
+			padding: 0.6rem 0.75rem;
+			background: #eff6ff;
+			border: 1px solid #bfdbfe;
+			border-radius: var(--radius);
+			font-size: 0.9rem;
+		}
+
+		.btn-row {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 0.5rem;
+		}
+
+		.dialog-output {
+			margin-top: 0.75rem;
+			padding: 0.6rem 0.75rem;
+			background: #fefce8;
+			border: 1px solid #fde68a;
+			border-radius: var(--radius);
+			font-size: 0.9rem;
+			min-height: 2.2rem;
+		}
+
+		.iframe-wrap {
+			border: 1px solid var(--line);
+			border-radius: var(--radius);
+			overflow: hidden;
+			margin-top: 0.5rem;
+		}
+
+		.iframe-wrap iframe {
+			width: 100%;
+			height: 220px;
+			border: 0;
+		}
+
+		/* ===== Welcome Hero ===== */
+		.hero {
+			text-align: center;
+			padding: 3rem 1rem;
+		}
+
+		.hero-icon { font-size: 3.5rem; margin-bottom: 1rem; }
+
+		.hero h2 {
+			border: none;
+			font-size: 1.8rem;
+			justify-content: center;
+		}
+
+		.hero p {
+			color: var(--muted);
+			font-size: 1.05rem;
+			max-width: 550px;
+			margin: 0.5rem auto 1.5rem;
+		}
+
+		.hero-features {
+			display: flex;
+			flex-wrap: wrap;
+			justify-content: center;
+			gap: 0.75rem;
+		}
+
+		.hero-chip {
+			background: var(--accent-soft);
+			color: var(--accent-dark);
+			padding: 0.4rem 0.85rem;
+			border-radius: 2rem;
+			font-size: 0.88rem;
+			font-weight: 500;
+		}
+
+		/* ===== Responsive ===== */
+		@media (max-width: 900px) {
+			.form-row,
+			.dropdown-group {
+				grid-template-columns: 1fr;
+			}
+
+			.interact-grid {
+				grid-template-columns: 1fr;
+			}
+		}
+
+		@media (max-width: 768px) {
+			.menu-toggle { display: block; }
+			.topbar-contact { display: none; }
+
+			.nav-menu {
+				display: none;
+				flex-direction: column;
+				gap: 0.15rem;
+				padding-bottom: 0.75rem;
+			}
+
+			.nav-menu.open { display: flex; }
+
+			.content-area { padding: 1.25rem; }
+			.hero { padding: 2rem 0.5rem; }
+
+			.product-grid {
+				grid-template-columns: repeat(2, 1fr);
+			}
+
+			.calc-grid {
+				grid-template-columns: repeat(4, 1fr);
+			}
+
+			.calc-btn { font-size: 1rem; }
+		}
+
+		@media (max-width: 480px) {
+			.product-grid {
+				grid-template-columns: 1fr;
+			}
+
+			.nav-menu a { font-size: 0.85rem; padding: 0.5rem 0.6rem; }
+		}
+
+		/* ===== Login Credentials Hint ===== */
+		.cred-box {
+			background: linear-gradient(135deg, #fef9c3, #fef3c7);
+			border: 1px solid #fbbf24;
+			border-left: 4px solid #f59e0b;
+			padding: 0.75rem 1rem;
+			border-radius: var(--radius);
+			margin-bottom: 1.25rem;
+			max-width: 420px;
+		}
+
+		.cred-box h4 {
+			margin: 0 0 0.35rem;
+			color: #92400e;
+			font-size: 0.92rem;
+			display: flex;
+			align-items: center;
+			gap: 0.35rem;
+		}
+
+		.cred-box p {
+			margin: 0.15rem 0;
+			color: #78350f;
+			font-size: 0.88rem;
+		}
+
+		.cred-box code {
+			background: rgba(255,255,255,0.6);
+			padding: 0.1rem 0.4rem;
+			border-radius: 3px;
+			font-family: 'Courier New', monospace;
+			font-weight: 700;
+			color: #451a03;
+		}
+
+		/* ===== Registration form alignment fix ===== */
+		.form-row .form-group input,
+		.form-row .form-group select,
+		.form-row .form-group textarea {
+			max-width: 100%;
+		}
+
+		.reg-form .form-group select,
+		.reg-form .form-group textarea {
+			max-width: 100%;
+		}
+
+		.reg-form .form-group input {
+			max-width: 100%;
+		}
+
+		/* ===== Modal Overlay ===== */
+		.modal-overlay {
+			position: fixed;
+			top: 0; left: 0; right: 0; bottom: 0;
+			background: rgba(15,23,42,0.5);
+			z-index: 200;
+			display: none;
+			align-items: center;
+			justify-content: center;
+			animation: fadeIn 0.2s ease;
+		}
+
+		.modal-overlay.visible { display: flex; }
+
+		@keyframes fadeIn {
+			from { opacity: 0; }
+			to   { opacity: 1; }
+		}
+
+		.modal-box {
+			background: var(--card);
+			border-radius: 0.75rem;
+			padding: 1.5rem;
+			width: 95%;
+			max-width: 580px;
+			max-height: 90vh;
+			overflow-y: auto;
+			box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+			animation: slideUp 0.25s ease;
+		}
+
+		@keyframes slideUp {
+			from { transform: translateY(20px); opacity: 0; }
+			to   { transform: translateY(0); opacity: 1; }
+		}
+
+		.modal-box h3 {
+			margin: 0 0 1.25rem;
+			font-size: 1.15rem;
+			color: var(--accent-dark);
+			border-bottom: 2px solid var(--accent);
+			padding-bottom: 0.5rem;
+		}
+
+		.modal-box .modal-row {
+			display: grid;
+			grid-template-columns: repeat(2, 1fr);
+			gap: 0.75rem 1rem;
+			margin-bottom: 0.75rem;
+		}
+
+		.modal-box .modal-row .form-group { margin-bottom: 0; }
+		.modal-box .form-group input,
+		.modal-box .form-group select { max-width: 100%; }
+
+		.modal-actions {
+			display: flex;
+			gap: 0.5rem;
+			justify-content: flex-end;
+			margin-top: 1rem;
+			padding-top: 0.75rem;
+			border-top: 1px solid var(--line);
+		}
+
+		/* ===== Datepicker ===== */
+		.datepicker-wrap {
+			display: inline-block;
+		}
+
+		.dp-input-row {
+			display: flex;
+			gap: 0.5rem;
+			align-items: center;
+			margin-bottom: 0.75rem;
+		}
+
+		.dp-input-row input {
+			padding: 0.55rem 0.7rem;
+			border: 1px solid var(--line);
+			border-radius: var(--radius);
+			font-size: 0.95rem;
+			font-family: inherit;
+			width: 180px;
+			cursor: pointer;
+		}
+
+		.dp-input-row input:focus {
+			outline: none;
+			border-color: var(--accent);
+			box-shadow: 0 0 0 3px rgba(37,99,235,0.15);
+		}
+
+		.dp-calendar {
+			background: var(--card);
+			border: 1px solid var(--line);
+			border-radius: 0.75rem;
+			padding: 0.75rem;
+			box-shadow: var(--shadow);
+			width: 280px;
+			display: none;
+		}
+
+		.dp-calendar.open { display: block; }
+
+		.dp-header {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			margin-bottom: 0.5rem;
+		}
+
+		.dp-header span {
+			font-weight: 700;
+			font-size: 0.95rem;
+			color: var(--accent-dark);
+		}
+
+		.dp-header button {
+			background: none;
+			border: 1px solid var(--line);
+			border-radius: var(--radius);
+			cursor: pointer;
+			width: 30px; height: 30px;
+			font-size: 1rem;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			transition: background 0.15s;
+		}
+
+		.dp-header button:hover { background: var(--accent-soft); }
+
+		.dp-days {
+			display: grid;
+			grid-template-columns: repeat(7, 1fr);
+			gap: 2px;
+			text-align: center;
+		}
+
+		.dp-days .dp-day-name {
+			font-size: 0.75rem;
+			font-weight: 700;
+			color: var(--muted);
+			padding: 0.3rem 0;
+		}
+
+		.dp-days .dp-day {
+			width: 34px; height: 34px;
+			border-radius: 50%;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			font-size: 0.85rem;
+			cursor: pointer;
+			transition: background 0.12s;
+			border: none;
+			background: none;
+			font-family: inherit;
+		}
+
+		.dp-days .dp-day:hover { background: var(--accent-soft); }
+		.dp-days .dp-day.today { border: 2px solid var(--accent); font-weight: 700; }
+		.dp-days .dp-day.selected { background: var(--accent); color: #fff; font-weight: 700; }
+		.dp-days .dp-day.other-month { color: #cbd5e1; }
+
+		.dp-output {
+			margin-top: 0.75rem;
+			padding: 0.6rem 0.75rem;
+			background: #eff6ff;
+			border: 1px solid #bfdbfe;
+			border-radius: var(--radius);
+			font-size: 0.9rem;
+		}
+
+		/* ===== Readonly Checkbox ===== */
+		.checkbox-list li.readonly-item label {
+			color: #94a3b8;
+			cursor: not-allowed;
+		}
+		.checkbox-list li.readonly-item input[type="checkbox"] {
+			pointer-events: none;
+			opacity: 0.5;
+		}
+
+		/* ===== Drag & Drop ===== */
+		.dnd-container {
+			display: flex;
+			gap: 1.5rem;
+			margin-top: 0.5rem;
+			flex-wrap: wrap;
+		}
+		.dnd-zone {
+			min-width: 130px;
+			min-height: 120px;
+			border: 2px dashed #cbd5e1;
+			border-radius: 0.75rem;
+			padding: 0.75rem;
+			background: #f1f5f9;
+			transition: border-color 0.2s, background 0.2s;
+			display: flex;
+			flex-direction: column;
+			gap: 0.4rem;
+		}
+		.dnd-zone h4 {
+			margin: 0 0 0.4rem;
+			font-size: 0.85rem;
+			color: var(--muted);
+			text-transform: uppercase;
+			letter-spacing: 0.03em;
+		}
+		.dnd-zone.drag-over {
+			border-color: var(--accent);
+			background: #eff6ff;
+		}
+		.dnd-item {
+			background: var(--accent);
+			color: #fff;
+			padding: 0.45rem 0.75rem;
+			border-radius: 0.375rem;
+			cursor: grab;
+			font-size: 0.88rem;
+			user-select: none;
+			transition: opacity 0.2s, transform 0.15s;
+		}
+		.dnd-item:active { cursor: grabbing; }
+		.dnd-item.dragging { opacity: 0.4; transform: scale(0.95); }
+
+		/* ===== Slider ===== */
+		.slider-wrap {
+			margin-top: 0.5rem;
+		}
+		.slider-wrap input[type="range"] {
+			width: 100%;
+			accent-color: var(--accent);
+			cursor: pointer;
+			height: 6px;
+		}
+		.slider-labels {
+			display: flex;
+			justify-content: space-between;
+			font-size: 0.8rem;
+			color: var(--muted);
+			margin-top: 0.25rem;
+		}
+		.slider-value {
+			text-align: center;
+			font-size: 2rem;
+			font-weight: 700;
+			color: var(--accent-dark);
+			margin: 0.5rem 0;
+		}
+		.slider-output {
+			margin-top: 0.5rem;
+			padding: 0.6rem 0.75rem;
+			background: #eff6ff;
+			border: 1px solid #bfdbfe;
+			border-radius: var(--radius);
+			font-size: 0.9rem;
+		}
+
+		/* ===== Mouse Hover ===== */
+		.hover-grid {
+			display: grid;
+			grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+			gap: 0.75rem;
+			margin-top: 0.5rem;
+		}
+		.hover-box {
+			padding: 1.25rem 0.5rem;
+			text-align: center;
+			border-radius: 0.75rem;
+			font-size: 0.88rem;
+			font-weight: 600;
+			color: #fff;
+			cursor: pointer;
+			transition: transform 0.2s, box-shadow 0.2s, filter 0.2s;
+			user-select: none;
+		}
+		.hover-box:hover {
+			transform: scale(1.08);
+			box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+			filter: brightness(1.1);
+		}
+		.hover-box.hb-blue   { background: #2563eb; }
+		.hover-box.hb-green  { background: #16a34a; }
+		.hover-box.hb-purple { background: #7c3aed; }
+		.hover-box.hb-orange { background: #ea580c; }
+		.hover-box.hb-pink   { background: #db2777; }
+		.hover-tooltip {
+			position: absolute;
+			background: #1e293b;
+			color: #fff;
+			padding: 0.4rem 0.7rem;
+			border-radius: 0.375rem;
+			font-size: 0.82rem;
+			pointer-events: none;
+			opacity: 0;
+			transition: opacity 0.2s;
+			z-index: 100;
+			white-space: nowrap;
+		}
+		.hover-tooltip.visible { opacity: 1; }
+		.hover-output {
+			margin-top: 0.75rem;
+			padding: 0.6rem 0.75rem;
+			background: #fefce8;
+			border: 1px solid #fde68a;
+			border-radius: var(--radius);
+			font-size: 0.9rem;
+		}
+	</style>
+</head>
+<body>
+
+	<!-- ==================== Top Navigation Bar ==================== -->
+	<header class="topbar">
+		<div class="topbar-inner">
+			<div class="topbar-brand">
+				<h1>Automation <span>Practice Hub</span></h1>
+				<div class="topbar-contact">
+					<a href="mailto:nagarjun.sdet@gmail.com"><span class="contact-icon">&#9993;</span> nagarjun.sdet@gmail.com</a>
+					<a href="tel:+919030086420"><span class="contact-icon">&#128222;</span> +91 9030086420</a>
+				</div>
+				<button class="menu-toggle" id="menuToggle" aria-label="Toggle menu">&#9776;</button>
+			</div>
+			<ul class="nav-menu" id="navMenu">
+				<li><a href="#" data-page="welcome" class="active"><span class="nav-icon">&#127968;</span> Home</a></li>
+				<li><a href="#" data-page="login"><span class="nav-icon">&#128274;</span> Login</a></li>
+				<li><a href="#" data-page="register"><span class="nav-icon">&#128221;</span> Register</a></li>
+				<li><a href="#" data-page="checkboxes"><span class="nav-icon">&#9745;</span> Checkboxes</a></li>
+				<li><a href="#" data-page="webtables"><span class="nav-icon">&#128202;</span> Webtables</a></li>
+				<li><a href="#" data-page="calculator"><span class="nav-icon">&#129518;</span> Calculator</a></li>
+				<li><a href="#" data-page="kmart"><span class="nav-icon">&#128722;</span> KMart</a></li>
+				<li><a href="#" data-page="dropdowns"><span class="nav-icon">&#128317;</span> Dropdowns</a></li>
+				<li><a href="#" data-page="upload"><span class="nav-icon">&#128228;</span> Upload</a></li>
+				<li><a href="#" data-page="interactions"><span class="nav-icon">&#9889;</span> Interactions</a></li>
+			</ul>
+		</div>
+	</header>
+
+	<!-- ==================== Main Content ==================== -->
+	<div class="main-wrap">
+		<main class="content-area">
+
+			<!-- ========== Welcome ========== -->
+			<section id="page-welcome" class="page-section active">
+				<div class="hero">
+					<div class="hero-icon">&#128640;</div>
+					<h2>Welcome to the Practice Hub</h2>
+					<p>All pages are rendered inline with no external redirects. Pick any menu item above to begin.</p>
+					<div class="hero-features">
+						<span class="hero-chip">&#128274; Login</span>
+						<span class="hero-chip">&#128221; Forms</span>
+						<span class="hero-chip">&#9745; Checkboxes</span>
+						<span class="hero-chip">&#128202; Tables</span>
+						<span class="hero-chip">&#129518; Calculator</span>
+						<span class="hero-chip">&#128722; KMart</span>
+						<span class="hero-chip">&#128317; Dropdowns</span>
+						<span class="hero-chip">&#128228; Upload</span>
+						<span class="hero-chip">&#9889; Interactions</span>
+					</div>
+				</div>
+			</section>
+
+			<!-- ========== 1. Login ========== -->
+			<section id="page-login" class="page-section">
+				<h2><span class="sec-icon">&#128274;</span> Login</h2>
+				<div class="cred-box">
+					<h4>&#128273; Default Credentials</h4>
+					<p>Username: <code>admin</code></p>
+					<p>Password: <code>Test@123</code></p>
+				</div>
+				<form id="loginForm" autocomplete="off">
+					<div class="form-group">
+						<label for="loginUser">Username</label>
+						<input type="text" id="loginUser" placeholder="Enter username" required />
+					</div>
+					<div class="form-group">
+						<label for="loginPass">Password</label>
+						<input type="password" id="loginPass" placeholder="Enter password" required />
+					</div>
+					<div class="form-group">
+						<label for="loginUserDesc">Username Description</label>
+						<input type="text" id="loginUserDesc" placeholder="Description for username" />
+					</div>
+					<button type="submit" class="btn btn-primary">Login</button>
+					<div id="loginMsg"></div>
+				</form>
+			</section>
+
+			<!-- ========== 2. Register ========== -->
+			<section id="page-register" class="page-section">
+				<h2><span class="sec-icon">&#128221;</span> Registration Form</h2>
+				<form id="registerForm" class="reg-form" autocomplete="off">
+					<div class="form-row">
+						<div class="form-group">
+							<label for="regFirst">First Name</label>
+							<input type="text" id="regFirst" placeholder="First name" required />
+						</div>
+						<div class="form-group">
+							<label for="regLast">Last Name</label>
+							<input type="text" id="regLast" placeholder="Last name" required />
+						</div>
+					</div>
+					<div class="form-row">
+						<div class="form-group">
+							<label for="regEmail">Email</label>
+							<input type="email" id="regEmail" placeholder="email@example.com" required />
+						</div>
+						<div class="form-group">
+							<label for="regPhone">Phone</label>
+							<input type="tel" id="regPhone" placeholder="Phone number" />
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="regGender">Gender</label>
+						<select id="regGender">
+							<option value="">Select</option>
+							<option>Male</option>
+							<option>Female</option>
+							<option>Other</option>
+						</select>
+					</div>
+					<div class="form-row">
+						<div class="form-group">
+							<label for="regAddr">Address</label>
+							<textarea id="regAddr" rows="2" placeholder="Street address"></textarea>
+						</div>
+						<div class="form-group">
+							<label for="regCity">City</label>
+							<input type="text" id="regCity" placeholder="City" />
+						</div>
+					</div>
+					<div class="form-row">
+						<div class="form-group">
+							<label for="regState">State</label>
+							<input type="text" id="regState" placeholder="State" />
+						</div>
+						<div class="form-group">
+							<label for="regZip">Postal Code</label>
+							<input type="text" id="regZip" placeholder="Postal code" />
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="regCountry">Country</label>
+						<select id="regCountry">
+							<option value="">Select country</option>
+							<option>India</option>
+							<option>USA</option>
+							<option>UK</option>
+							<option>Germany</option>
+							<option>Australia</option>
+							<option>Canada</option>
+						</select>
+					</div>
+					<div class="form-group">
+						<label for="regUser">Username</label>
+						<input type="text" id="regUser" placeholder="Choose a username" required />
+					</div>
+					<div class="form-row">
+						<div class="form-group">
+							<label for="regPass">Password</label>
+							<input type="password" id="regPass" placeholder="Password" required />
+						</div>
+						<div class="form-group">
+							<label for="regConfirm">Confirm Password</label>
+							<input type="password" id="regConfirm" placeholder="Confirm password" required />
+						</div>
+					</div>
+					<button type="submit" class="btn btn-success">Register</button>
+					<button type="reset" class="btn btn-secondary" style="margin-left:0.5rem;">Reset</button>
+					<div id="regMsg"></div>
+				</form>
+			</section>
+
+			<!-- ========== 3. Checkboxes ========== -->
+			<section id="page-checkboxes" class="page-section">
+				<h2><span class="sec-icon">&#9745;</span> Checkboxes</h2>
+				<p>Select the options below:</p>
+				<ul class="checkbox-list" id="cbList">
+					<li><label><input type="checkbox" value="Receive email notifications" /> Receive email notifications</label></li>
+					<li><label><input type="checkbox" value="Enable dark mode" /> Enable dark mode</label></li>
+					<li><label><input type="checkbox" value="Subscribe to newsletter" /> Subscribe to newsletter</label></li>
+					<li><label><input type="checkbox" value="Share usage analytics" /> Share usage analytics</label></li>
+					<li><label><input type="checkbox" value="Enable two-factor authentication" /> Enable two-factor authentication</label></li>
+					<li><label><input type="checkbox" value="Auto-save drafts" /> Auto-save drafts</label></li>
+					<li class="readonly-item"><label><input type="checkbox" value="Accept Terms and Conditions" checked disabled readonly /> Accept Terms and Conditions <em style="font-size:0.8rem;color:#94a3b8;">(readonly)</em></label></li>
+					<li class="readonly-item"><label><input type="checkbox" value="Required cookies" disabled readonly /> Required cookies <em style="font-size:0.8rem;color:#94a3b8;">(readonly)</em></label></li>
+				</ul>
+				<div style="margin-top:0.75rem;">
+					<button class="btn btn-primary" id="cbSelectAll">Select All</button>
+					<button class="btn btn-secondary" id="cbDeselectAll">Deselect All</button>
+				</div>
+				<div id="cbOutput" class="cb-output">No items selected.</div>
+			</section>
+
+			<!-- ========== 4. Webtables ========== -->
+			<section id="page-webtables" class="page-section">
+				<h2><span class="sec-icon">&#128202;</span> Web Tables</h2>
+				<div class="table-controls">
+					<input type="text" id="tableSearch" placeholder="Search table..." />
+					<button class="btn btn-success" id="addUserBtn">+ Add User</button>
+				</div>
+				<div style="overflow-x:auto;">
+					<table class="data-table" id="webTable">
+						<thead>
+							<tr>
+								<th>First Name</th>
+								<th>Last Name</th>
+								<th>User Name</th>
+								<th>Customer</th>
+								<th>Role</th>
+								<th>E-mail</th>
+								<th>Cell Phone</th>
+								<th>Actions</th>
+							</tr>
+						</thead>
+						<tbody id="tableBody"></tbody>
+					</table>
+				</div>
+			</section>
+
+			<!-- Add User Modal -->
+			<div class="modal-overlay" id="addUserModal">
+				<div class="modal-box">
+					<h3 id="modalTitle">Add User</h3>
+					<form id="addUserForm" autocomplete="off">
+						<div class="modal-row">
+							<div class="form-group">
+								<label for="muFirst">First Name *</label>
+								<input type="text" id="muFirst" placeholder="First name" required />
+							</div>
+							<div class="form-group">
+								<label for="muLast">Last Name *</label>
+								<input type="text" id="muLast" placeholder="Last name" required />
+							</div>
+						</div>
+						<div class="modal-row">
+							<div class="form-group">
+								<label for="muUserName">User Name *</label>
+								<input type="text" id="muUserName" placeholder="User name" required />
+							</div>
+							<div class="form-group">
+								<label for="muCustomer">Customer</label>
+								<select id="muCustomer">
+									<option value="Company AAA">Company AAA</option>
+									<option value="Company BBB">Company BBB</option>
+								</select>
+							</div>
+						</div>
+						<div class="modal-row">
+							<div class="form-group">
+								<label for="muRole">Role</label>
+								<select id="muRole">
+									<option value="Admin">Admin</option>
+									<option value="Customer">Customer</option>
+									<option value="Sales Team">Sales Team</option>
+								</select>
+							</div>
+							<div class="form-group">
+								<label for="muEmail">E-mail *</label>
+								<input type="email" id="muEmail" placeholder="email@example.com" required />
+							</div>
+						</div>
+						<div class="modal-row">
+							<div class="form-group">
+								<label for="muPhone">Cell Phone</label>
+								<input type="tel" id="muPhone" placeholder="Cell phone" />
+							</div>
+						</div>
+						<div class="modal-actions">
+							<button type="button" class="btn btn-secondary" id="modalCancelBtn">Cancel</button>
+							<button type="submit" class="btn btn-success" id="modalSaveBtn">Save</button>
+						</div>
+					</form>
+				</div>
+			</div>
+
+			<!-- ========== 5. Calculator ========== -->
+			<section id="page-calculator" class="page-section">
+				<h2><span class="sec-icon">&#129518;</span> Calculator</h2>
+				<div class="calc-wrap">
+					<div class="calc-grid">
+						<div class="calc-display" id="calcDisplay">0</div>
+						<button class="calc-btn" data-val="7">7</button>
+						<button class="calc-btn" data-val="8">8</button>
+						<button class="calc-btn" data-val="9">9</button>
+						<button class="calc-btn op" data-val="/">/</button>
+						<button class="calc-btn" data-val="4">4</button>
+						<button class="calc-btn" data-val="5">5</button>
+						<button class="calc-btn" data-val="6">6</button>
+						<button class="calc-btn op" data-val="*">&times;</button>
+						<button class="calc-btn" data-val="1">1</button>
+						<button class="calc-btn" data-val="2">2</button>
+						<button class="calc-btn" data-val="3">3</button>
+						<button class="calc-btn op" data-val="-">&minus;</button>
+						<button class="calc-btn" data-val="0">0</button>
+						<button class="calc-btn" data-val=".">.</button>
+						<button class="calc-btn op" data-val="C">C</button>
+						<button class="calc-btn op" data-val="+">+</button>
+						<button class="calc-btn eq" data-val="=" style="grid-column:1/-1;">=</button>
+					</div>
+				</div>
+			</section>
+
+			<!-- ========== 6. KMart ========== -->
+			<section id="page-kmart" class="page-section">
+				<h2><span class="sec-icon">&#128722;</span> KMart &mdash; Grocery Store</h2>
+				<input type="text" id="kmartSearch" class="kmart-search" placeholder="Search products..." />
+				<div class="product-grid" id="productGrid"></div>
+				<div class="cart-summary">
+					<span class="cart-icon">&#128722;</span>
+					<span><strong>Cart:</strong> <span id="cartItems">0</span> items</span>
+					<span><strong>Total:</strong> $<span id="cartTotal">0.00</span></span>
+				</div>
+			</section>
+
+			<!-- ========== 7. Dropdowns ========== -->
+			<section id="page-dropdowns" class="page-section">
+				<h2><span class="sec-icon">&#128317;</span> Dropdowns</h2>
+				<div class="dropdown-group">
+					<div>
+						<label for="ddCountry">Country</label>
+						<select id="ddCountry">
+							<option value="">Select country</option>
+							<option>India</option>
+							<option>USA</option>
+							<option>UK</option>
+							<option>Germany</option>
+							<option>Australia</option>
+						</select>
+					</div>
+					<div>
+						<label for="ddCurrency">Currency</label>
+						<select id="ddCurrency">
+							<option value="">Select currency</option>
+							<option>INR</option>
+							<option>USD</option>
+							<option>GBP</option>
+							<option>EUR</option>
+							<option>AUD</option>
+						</select>
+					</div>
+					<div>
+						<label for="ddLanguage">Language</label>
+						<select id="ddLanguage">
+							<option value="">Select language</option>
+							<option>English</option>
+							<option>Hindi</option>
+							<option>Spanish</option>
+							<option>French</option>
+							<option>German</option>
+						</select>
+					</div>
+					<div>
+						<label for="ddFramework">Framework</label>
+						<select id="ddFramework">
+							<option value="">Select framework</option>
+							<option>Playwright</option>
+							<option>Selenium</option>
+							<option>Cypress</option>
+							<option>Puppeteer</option>
+						</select>
+					</div>
+				</div>
+				<div id="ddOutput" class="dd-output">Select values from the dropdowns above.</div>
+			</section>
+
+			<!-- ========== 8. Upload / Download ========== -->
+			<section id="page-upload" class="page-section">
+				<h2><span class="sec-icon">&#128228;</span> Upload / Download</h2>
+				<div class="upload-zone" id="uploadZone">
+					<div class="upload-icon">&#128449;</div>
+					<p style="font-size:1.05rem;font-weight:500;">Drag &amp; drop files here or click to browse</p>
+					<p style="margin-top:0.25rem;color:var(--muted);font-size:0.85rem;">Supports any file type</p>
+					<input type="file" id="fileInput" multiple hidden />
+				</div>
+				<ul class="file-list" id="fileList"></ul>
+				<div style="margin-top:1.25rem;">
+					<h3 style="margin:0 0 0.5rem;">Download Sample Files</h3>
+					<button class="btn btn-primary" id="dlText">Download sample.txt</button>
+					<button class="btn btn-success" id="dlCsv" style="margin-left:0.5rem;">Download data.csv</button>
+				</div>
+			</section>
+
+			<!-- ========== 9. Interactions (NEW) ========== -->
+			<section id="page-interactions" class="page-section">
+				<h2><span class="sec-icon">&#9889;</span> Interactions</h2>
+				<div class="interact-grid">
+
+					<!-- Radio Buttons -->
+					<div class="interact-card">
+						<h3>&#128280; Radio Buttons</h3>
+						<p style="color:var(--muted);font-size:0.88rem;margin-bottom:0.65rem;">Choose your preferred tech stack:</p>
+						<div class="radio-group" id="radioGroup">
+							<label><input type="radio" name="techStack" value="Java" /> Java</label>
+							<label><input type="radio" name="techStack" value="Python" /> Python</label>
+							<label><input type="radio" name="techStack" value="JavaScript" /> JavaScript</label>
+							<label><input type="radio" name="techStack" value="C#" /> C#</label>
+							<label><input type="radio" name="techStack" value="TypeScript" /> TypeScript</label>
+						</div>
+						<div id="radioOutput" class="radio-output">No selection made.</div>
+					</div>
+
+					<!-- Alert / Confirm / Prompt -->
+					<div class="interact-card">
+						<h3>&#128172; Dialogs &mdash; Alert, Confirm, Prompt</h3>
+						<p style="color:var(--muted);font-size:0.88rem;margin-bottom:0.65rem;">Click a button to trigger the corresponding browser dialog:</p>
+						<div class="btn-row">
+							<button class="btn btn-warning" id="btnAlert">&#9888; Alert</button>
+							<button class="btn btn-info" id="btnConfirm">&#10003; Confirm</button>
+							<button class="btn btn-primary" id="btnPrompt">&#9998; Prompt</button>
+						</div>
+						<div id="dialogOutput" class="dialog-output">Dialog result will appear here.</div>
+					</div>
+
+					<!-- Iframe -->
+					<div class="interact-card">
+						<h3>&#128444; Inline Frame (iframe)</h3>
+						<p style="color:var(--muted);font-size:0.88rem;margin-bottom:0.65rem;">This iframe loads a sample page generated locally:</p>
+						<div class="iframe-wrap">
+							<iframe id="sampleIframe" srcdoc="
+								<!DOCTYPE html>
+								<html>
+								<head><style>
+									body { font-family: system-ui, sans-serif; margin: 0; padding: 1.5rem; background: linear-gradient(135deg,#eff6ff,#faf5ff); color: #1e293b; }
+									h2 { margin:0 0 0.5rem; font-size:1.1rem; color:#4338ca; }
+									p { margin:0 0 0.5rem; font-size:0.9rem; color:#475569; }
+									button { background:#2563eb; color:#fff; border:none; padding:0.45rem 0.85rem; border-radius:0.375rem; cursor:pointer; font-size:0.88rem; }
+									button:hover { background:#1d4ed8; }
+									#iframeMsg { margin-top:0.5rem; padding:0.4rem; background:#dcfce7; border-radius:0.375rem; font-size:0.85rem; display:none; }
+								</style></head>
+								<body>
+									<h2>&#127760; Hello from the iframe!</h2>
+									<p>This is an embedded inline frame. You can interact with it independently.</p>
+									<button onclick='document.getElementById(&quot;iframeMsg&quot;).style.display=&quot;block&quot;'>Click Me Inside</button>
+									<div id='iframeMsg'>&#10004; Button inside iframe was clicked!</div>
+								</body>
+								</html>
+							"></iframe>
+						</div>
+					</div>
+
+					<!-- Child Window -->
+					<div class="interact-card">
+						<h3>&#128424; Child Window</h3>
+						<p style="color:var(--muted);font-size:0.88rem;margin-bottom:0.65rem;">Open a new child window with custom content:</p>
+						<div class="btn-row">
+							<button class="btn btn-primary" id="btnChildWindow">&#128424; Open Child Window</button>
+							<button class="btn btn-danger" id="btnCloseChild">&#10005; Close Child Window</button>
+						</div>
+						<div id="childWindowOutput" class="dialog-output">Child window status will appear here.</div>
+					</div>
+
+					<!-- Drag and Drop -->
+					<div class="interact-card">
+						<h3>&#128400; Drag &amp; Drop</h3>
+						<p style="color:var(--muted);font-size:0.88rem;margin-bottom:0.65rem;">Drag items from the left zone and drop them into the right zone:</p>
+						<div class="dnd-container">
+							<div class="dnd-zone" id="dndSource">
+								<h4>Available</h4>
+								<div class="dnd-item" draggable="true" data-id="1">&#127823; Apple</div>
+								<div class="dnd-item" draggable="true" data-id="2">&#127820; Banana</div>
+								<div class="dnd-item" draggable="true" data-id="3">&#127826; Cherry</div>
+								<div class="dnd-item" draggable="true" data-id="4">&#127815; Orange</div>
+							</div>
+							<div class="dnd-zone" id="dndTarget">
+								<h4>Dropped</h4>
+							</div>
+						</div>
+						<div id="dndOutput" class="dialog-output">Drag items to the drop zone.</div>
+					</div>
+
+					<!-- Slider -->
+					<div class="interact-card">
+						<h3>&#127898; Slider</h3>
+						<p style="color:var(--muted);font-size:0.88rem;margin-bottom:0.65rem;">Adjust the slider to select a value:</p>
+						<div class="slider-wrap">
+							<div class="slider-value" id="sliderValue">50</div>
+							<input type="range" id="sliderRange" min="0" max="100" value="50" step="1" />
+							<div class="slider-labels"><span>0</span><span>25</span><span>50</span><span>75</span><span>100</span></div>
+						</div>
+						<div id="sliderOutput" class="slider-output">Current value: 50</div>
+					</div>
+
+					<!-- Mouse Hover -->
+					<div class="interact-card" style="position:relative;">
+						<h3>&#128433; Mouse Hover</h3>
+						<p style="color:var(--muted);font-size:0.88rem;margin-bottom:0.65rem;">Hover over the colored boxes to see tooltips and effects:</p>
+						<div class="hover-grid" id="hoverGrid">
+							<div class="hover-box hb-blue" data-tooltip="Blue — Primary actions" data-color="blue">Blue</div>
+							<div class="hover-box hb-green" data-tooltip="Green — Success status" data-color="green">Green</div>
+							<div class="hover-box hb-purple" data-tooltip="Purple — Creative zone" data-color="purple">Purple</div>
+							<div class="hover-box hb-orange" data-tooltip="Orange — Warning level" data-color="orange">Orange</div>
+							<div class="hover-box hb-pink" data-tooltip="Pink — Highlight item" data-color="pink">Pink</div>
+						</div>
+						<div class="hover-tooltip" id="hoverTooltip"></div>
+						<div id="hoverOutput" class="hover-output">Hover over a box to see details.</div>
+					</div>
+
+					<!-- Date Picker -->
+					<div class="interact-card">
+						<h3>&#128197; Date Picker</h3>
+						<p style="color:var(--muted);font-size:0.88rem;margin-bottom:0.65rem;">Pick a date from the calendar:</p>
+						<div class="datepicker-wrap">
+							<div class="dp-input-row">
+								<input type="text" id="dpInput" placeholder="Select a date" readonly />
+								<button type="button" class="btn btn-outline" id="dpToggle">&#128197;</button>
+							</div>
+							<div class="dp-calendar" id="dpCalendar">
+								<div class="dp-header">
+									<button type="button" id="dpPrev">&#9664;</button>
+									<span id="dpMonthYear"></span>
+									<button type="button" id="dpNext">&#9654;</button>
+								</div>
+								<div class="dp-days" id="dpDays"></div>
+							</div>
+						</div>
+						<div id="dpOutput" class="dp-output">No date selected.</div>
+					</div>
+
+				</div>
+			</section>
+
+		</main>
+	</div>
+
+	<script>
+	(function () {
+		"use strict";
+
+		/* ===================================================
+		   Navigation — horizontal menu, show/hide pages
+		   =================================================== */
+		const navMenu = document.getElementById("navMenu");
+		const navLinks = navMenu.querySelectorAll("a");
+		const allPages = document.querySelectorAll(".page-section");
+
+		function showPage(pageId) {
+			allPages.forEach((p) => p.classList.remove("active"));
+			const target = document.getElementById("page-" + pageId);
+			if (target) target.classList.add("active");
+		}
+
+		navMenu.addEventListener("click", (e) => {
+			const link = e.target.closest("a");
+			if (!link) return;
+			e.preventDefault();
+			navLinks.forEach((l) => l.classList.remove("active"));
+			link.classList.add("active");
+			showPage(link.dataset.page);
+			/* Close mobile menu after click */
+			navMenu.classList.remove("open");
+		});
+
+		/* Mobile hamburger toggle */
+		document.getElementById("menuToggle").addEventListener("click", () => {
+			navMenu.classList.toggle("open");
+		});
+
+		/* ===================================================
+		   1. Login — validate against default credentials
+		   =================================================== */
+		const DEFAULT_USER = "admin";
+		const DEFAULT_PASS = "Test@123";
+
+		document.getElementById("loginForm").addEventListener("submit", (e) => {
+			e.preventDefault();
+			const user = document.getElementById("loginUser").value.trim();
+			const pass = document.getElementById("loginPass").value.trim();
+			const msg = document.getElementById("loginMsg");
+			if (!user || !pass) {
+				msg.className = "msg msg-error";
+				msg.textContent = "Please fill in all required fields.";
+			} else if (user === DEFAULT_USER && pass === DEFAULT_PASS) {
+				msg.className = "msg msg-success";
+				msg.textContent = "Login successful! Welcome, " + user + ".";
+			} else {
+				msg.className = "msg msg-error";
+				msg.textContent = "Invalid username or password. Please try again.";
+			}
+		});
+
+		/* ===================================================
+		   2. Register
+		   =================================================== */
+		document.getElementById("registerForm").addEventListener("submit", (e) => {
+			e.preventDefault();
+			const pass = document.getElementById("regPass").value;
+			const confirm = document.getElementById("regConfirm").value;
+			const msg = document.getElementById("regMsg");
+			if (pass !== confirm) {
+				msg.className = "msg msg-error";
+				msg.textContent = "Passwords do not match.";
+				return;
+			}
+			msg.className = "msg msg-success";
+			msg.textContent = "Registration successful for " + document.getElementById("regUser").value.trim() + "!";
+		});
+
+		/* ===================================================
+		   3. Checkboxes
+		   =================================================== */
+		const cbList = document.getElementById("cbList");
+		const cbOutput = document.getElementById("cbOutput");
+
+		function updateCbOutput() {
+			const checked = [...cbList.querySelectorAll("input:checked")].map((c) => c.value);
+			cbOutput.textContent = checked.length ? "Selected: " + checked.join(", ") : "No items selected.";
+		}
+
+		cbList.addEventListener("change", updateCbOutput);
+
+		document.getElementById("cbSelectAll").addEventListener("click", () => {
+			cbList.querySelectorAll("input:not(:disabled)").forEach((c) => (c.checked = true));
+			updateCbOutput();
+		});
+
+		document.getElementById("cbDeselectAll").addEventListener("click", () => {
+			cbList.querySelectorAll("input:not(:disabled)").forEach((c) => (c.checked = false));
+			updateCbOutput();
+		});
+
+		/* ===================================================
+		   4. Webtables — way2automation style
+		   =================================================== */
+		const userTableData = [
+			{ first: "John",    last: "Smith",    userName: "jsmith",    customer: "Company AAA", role: "Admin",      email: "john.smith@mail.com",    phone: "082555006" },
+			{ first: "Sarah",   last: "Johnson",  userName: "sjohnson",  customer: "Company BBB", role: "Customer",   email: "sarah.j@mail.com",       phone: "083456789" },
+			{ first: "Michael", last: "Williams", userName: "mwilliams", customer: "Company AAA", role: "Admin",      email: "m.williams@mail.com",    phone: "0123456789" },
+			{ first: "Emily",   last: "Brown",    userName: "ebrown",    customer: "Company BBB", role: "Sales Team", email: "emily.brown@mail.com",   phone: "0987654321" },
+			{ first: "David",   last: "Martinez", userName: "dmartinez", customer: "Company AAA", role: "Customer",   email: "david.m@mail.com",       phone: "0555555555" },
+			{ first: "Jessica", last: "Taylor",   userName: "jtaylor",   customer: "Company BBB", role: "Admin",      email: "jessica.t@mail.com",     phone: "0666666666" },
+		];
+
+		const tableBody = document.getElementById("tableBody");
+		const addUserModal = document.getElementById("addUserModal");
+		const addUserForm = document.getElementById("addUserForm");
+		const modalTitle = document.getElementById("modalTitle");
+		let editingRowIdx = -1; /* -1 = adding, >= 0 = editing */
+
+		function renderTable(data) {
+			tableBody.innerHTML = data
+				.map(
+					(r, i) =>
+						"<tr>" +
+						"<td>" + r.first + "</td>" +
+						"<td>" + r.last + "</td>" +
+						"<td>" + r.userName + "</td>" +
+						"<td>" + r.customer + "</td>" +
+						"<td>" + r.role + "</td>" +
+						"<td>" + r.email + "</td>" +
+						"<td>" + r.phone + "</td>" +
+						'<td style="white-space:nowrap;">' +
+						'<button class="btn btn-info" style="padding:0.2rem 0.55rem;font-size:0.8rem;margin-right:0.3rem;" data-edit="' + i + '">Edit</button>' +
+						'<button class="btn btn-danger" style="padding:0.2rem 0.55rem;font-size:0.8rem;" data-delete="' + i + '">Delete</button>' +
+						"</td></tr>"
+				)
+				.join("");
+		}
+
+		renderTable(userTableData);
+
+		/* Search */
+		document.getElementById("tableSearch").addEventListener("input", function () {
+			const q = this.value.toLowerCase();
+			const filtered = userTableData.filter(
+				(r) =>
+					r.first.toLowerCase().includes(q) ||
+					r.last.toLowerCase().includes(q) ||
+					r.userName.toLowerCase().includes(q) ||
+					r.email.toLowerCase().includes(q) ||
+					r.role.toLowerCase().includes(q) ||
+					r.customer.toLowerCase().includes(q)
+			);
+			renderTable(filtered);
+		});
+
+		/* Table action delegation — Edit & Delete */
+		tableBody.addEventListener("click", (e) => {
+			const editBtn = e.target.closest("[data-edit]");
+			const deleteBtn = e.target.closest("[data-delete]");
+
+			if (editBtn) {
+				const idx = parseInt(editBtn.dataset.edit);
+				const row = userTableData[idx];
+				editingRowIdx = idx;
+				modalTitle.textContent = "Edit User";
+				document.getElementById("muFirst").value = row.first;
+				document.getElementById("muLast").value = row.last;
+				document.getElementById("muUserName").value = row.userName;
+				document.getElementById("muCustomer").value = row.customer;
+				document.getElementById("muRole").value = row.role;
+				document.getElementById("muEmail").value = row.email;
+				document.getElementById("muPhone").value = row.phone;
+				addUserModal.classList.add("visible");
+			}
+
+			if (deleteBtn) {
+				const idx = parseInt(deleteBtn.dataset.delete);
+				if (confirm("Delete user \"" + userTableData[idx].userName + "\"?")) {
+					userTableData.splice(idx, 1);
+					renderTable(userTableData);
+				}
+			}
+		});
+
+		/* Add User button — open modal in add mode */
+		document.getElementById("addUserBtn").addEventListener("click", () => {
+			editingRowIdx = -1;
+			modalTitle.textContent = "Add User";
+			addUserForm.reset();
+			addUserModal.classList.add("visible");
+		});
+
+		/* Cancel modal */
+		document.getElementById("modalCancelBtn").addEventListener("click", () => {
+			addUserModal.classList.remove("visible");
+		});
+
+		/* Click outside modal to close */
+		addUserModal.addEventListener("click", (e) => {
+			if (e.target === addUserModal) addUserModal.classList.remove("visible");
+		});
+
+		/* Save user (add or edit) */
+		addUserForm.addEventListener("submit", (e) => {
+			e.preventDefault();
+			const row = {
+				first:    document.getElementById("muFirst").value.trim(),
+				last:     document.getElementById("muLast").value.trim(),
+				userName: document.getElementById("muUserName").value.trim(),
+				customer: document.getElementById("muCustomer").value,
+				role:     document.getElementById("muRole").value,
+				email:    document.getElementById("muEmail").value.trim(),
+				phone:    document.getElementById("muPhone").value.trim(),
+			};
+			if (editingRowIdx >= 0) {
+				userTableData[editingRowIdx] = row;
+			} else {
+				userTableData.push(row);
+			}
+			renderTable(userTableData);
+			addUserModal.classList.remove("visible");
+			addUserForm.reset();
+		});
+
+		/* ===================================================
+		   5. Calculator
+		   =================================================== */
+		const calcDisplay = document.getElementById("calcDisplay");
+		let calcExpr = "";
+
+		document.querySelector(".calc-grid").addEventListener("click", (e) => {
+			const btn = e.target.closest(".calc-btn");
+			if (!btn) return;
+			const val = btn.dataset.val;
+
+			if (val === "C") {
+				calcExpr = "";
+				calcDisplay.textContent = "0";
+			} else if (val === "=") {
+				try {
+					calcDisplay.textContent = Function('"use strict"; return (' + calcExpr + ")")();
+				} catch {
+					calcDisplay.textContent = "Error";
+				}
+				calcExpr = "";
+			} else {
+				calcExpr += val;
+				calcDisplay.textContent = calcExpr;
+			}
+		});
+
+		/* ===================================================
+		   6. KMart — with grocery images (emoji)
+		   =================================================== */
+		const products = [
+			{ name: "Broccoli - 1 Kg",    price: 120, img: "&#129382;" },
+			{ name: "Cauliflower - 1 Kg",  price: 60,  img: "&#129388;" },
+			{ name: "Cucumber - 1 Kg",     price: 48,  img: "&#129362;" },
+			{ name: "Beetroot - 1 Kg",     price: 32,  img: "<svg viewBox='0 0 100 120' width='56' height='56'><path d='M50 40C30 40 18 55 18 75C18 98 32 112 50 112C68 112 82 98 82 75C82 55 70 40 50 40Z' fill='#8B1A4A'/><ellipse cx='50' cy='78' rx='20' ry='24' fill='#A0204E' opacity='0.5'/><line x1='50' y1='40' x2='42' y2='12' stroke='#228B22' stroke-width='3' stroke-linecap='round'/><line x1='50' y1='40' x2='50' y2='8' stroke='#228B22' stroke-width='3' stroke-linecap='round'/><line x1='50' y1='40' x2='58' y2='12' stroke='#228B22' stroke-width='3' stroke-linecap='round'/></svg>" },
+			{ name: "Carrot - 1 Kg",       price: 44,  img: "&#129365;" },
+			{ name: "Tomato - 1 Kg",       price: 56,  img: "&#127813;" },
+			{ name: "Beans - 1 Kg",        price: 62,  img: "<svg viewBox='0 0 100 100' width='56' height='56'><path d='M25 72C18 52 30 28 52 22C72 17 86 30 88 48C90 66 78 80 58 82C38 84 28 82 25 72Z' fill='#4CAF50'/><path d='M32 68C28 50 38 34 55 28C72 24 82 34 83 48' stroke='#2E7D32' stroke-width='2' fill='none'/><ellipse cx='44' cy='52' rx='5' ry='4.5' fill='#2E7D32'/><ellipse cx='58' cy='44' rx='5' ry='4.5' fill='#2E7D32'/><ellipse cx='70' cy='44' rx='5' ry='4.5' fill='#2E7D32'/></svg>" },
+			{ name: "Brinjal - 1 Kg",      price: 36,  img: "&#127814;" },
+			{ name: "Mushroom - 1 Kg",     price: 250, img: "&#127812;" },
+			{ name: "Potato - 1 Kg",        price: 24,  img: "&#129364;" },
+			{ name: "Pumpkin - 1 Kg",      price: 48,  img: "&#127875;" },
+			{ name: "Corn - 1 Kg",         price: 80,  img: "&#127805;" },
+		];
+
+		const cart = {};
+		const productGrid = document.getElementById("productGrid");
+		const cartItemsEl = document.getElementById("cartItems");
+		const cartTotalEl = document.getElementById("cartTotal");
+
+		function renderProducts(list) {
+			productGrid.innerHTML = list
+				.map(
+					(p, i) =>
+						'<div class="product-card">' +
+						'<div class="product-img">' + p.img + '</div>' +
+						'<div class="product-info">' +
+						"<h4>" + p.name + "</h4>" +
+						'<p class="price">$' + p.price.toFixed(2) + "</p>" +
+						'<div class="qty-ctrl">' +
+						'<button data-action="dec" data-idx="' + i + '">&minus;</button>' +
+						'<span id="qty-' + i + '">' + (cart[i] || 0) + "</span>" +
+						'<button data-action="inc" data-idx="' + i + '">+</button>' +
+						"</div></div></div>"
+				)
+				.join("");
+		}
+
+		function updateCart() {
+			let items = 0, total = 0;
+			for (const idx in cart) {
+				items += cart[idx];
+				total += cart[idx] * products[idx].price;
+			}
+			cartItemsEl.textContent = items;
+			cartTotalEl.textContent = total.toFixed(2);
+		}
+
+		renderProducts(products);
+
+		productGrid.addEventListener("click", (e) => {
+			const btn = e.target.closest("button");
+			if (!btn) return;
+			const idx = btn.dataset.idx;
+			if (!cart[idx]) cart[idx] = 0;
+			if (btn.dataset.action === "inc") cart[idx]++;
+			if (btn.dataset.action === "dec" && cart[idx] > 0) cart[idx]--;
+			document.getElementById("qty-" + idx).textContent = cart[idx];
+			updateCart();
+		});
+
+		document.getElementById("kmartSearch").addEventListener("input", function () {
+			const q = this.value.toLowerCase();
+			const filtered = products.filter((p) => p.name.toLowerCase().includes(q));
+			renderProducts(filtered);
+		});
+
+		/* ===================================================
+		   7. Dropdowns
+		   =================================================== */
+		const ddIds = ["ddCountry", "ddCurrency", "ddLanguage", "ddFramework"];
+		const ddOutput = document.getElementById("ddOutput");
+
+		function updateDdOutput() {
+			const vals = ddIds.map((id) => {
+				const el = document.getElementById(id);
+				return el.previousElementSibling.textContent + ": " + (el.value || "Not selected");
+			});
+			ddOutput.textContent = vals.join(" | ");
+		}
+
+		ddIds.forEach((id) => document.getElementById(id).addEventListener("change", updateDdOutput));
+
+		/* ===================================================
+		   8. Upload / Download
+		   =================================================== */
+		const uploadZone = document.getElementById("uploadZone");
+		const fileInput = document.getElementById("fileInput");
+		const fileListEl = document.getElementById("fileList");
+
+		uploadZone.addEventListener("click", () => fileInput.click());
+		uploadZone.addEventListener("dragover", (e) => { e.preventDefault(); uploadZone.style.borderColor = "var(--accent)"; uploadZone.style.background = "#eff6ff"; });
+		uploadZone.addEventListener("dragleave", () => { uploadZone.style.borderColor = "var(--line)"; uploadZone.style.background = "#fafbfc"; });
+		uploadZone.addEventListener("drop", (e) => {
+			e.preventDefault();
+			uploadZone.style.borderColor = "var(--line)";
+			uploadZone.style.background = "#fafbfc";
+			handleFiles(e.dataTransfer.files);
+		});
+		fileInput.addEventListener("change", () => handleFiles(fileInput.files));
+
+		function handleFiles(files) {
+			[...files].forEach((f) => {
+				const li = document.createElement("li");
+				li.innerHTML = "<span>&#128196; " + f.name + " (" + (f.size / 1024).toFixed(1) + " KB)</span>" +
+					'<button class="btn btn-danger" style="padding:0.2rem 0.5rem;font-size:0.8rem;">Remove</button>';
+				li.querySelector("button").addEventListener("click", () => li.remove());
+				fileListEl.appendChild(li);
+			});
+		}
+
+		function downloadBlob(content, filename, mime) {
+			const blob = new Blob([content], { type: mime });
+			const a = document.createElement("a");
+			a.href = URL.createObjectURL(blob);
+			a.download = filename;
+			a.click();
+			URL.revokeObjectURL(a.href);
+		}
+
+		document.getElementById("dlText").addEventListener("click", () => {
+			downloadBlob("This is a sample text file.\nGenerated by the Automation Practice Hub.", "sample.txt", "text/plain");
+		});
+
+		document.getElementById("dlCsv").addEventListener("click", () => {
+			downloadBlob("First Name,Last Name,Email\nJohn,Smith,john@test.com\nJane,Doe,jane@test.com\nBob,Johnson,bob@test.com", "data.csv", "text/csv");
+		});
+
+		/* ===================================================
+		   9. Interactions — Radio, Dialogs, Iframe, Child Window
+		   =================================================== */
+
+		/* Radio Buttons */
+		const radioGroup = document.getElementById("radioGroup");
+		const radioOutput = document.getElementById("radioOutput");
+
+		radioGroup.addEventListener("change", () => {
+			const selected = radioGroup.querySelector("input:checked");
+			radioOutput.textContent = selected ? "Selected: " + selected.value : "No selection made.";
+		});
+
+		/* Alert */
+		document.getElementById("btnAlert").addEventListener("click", () => {
+			alert("This is a sample Alert dialog!\nYou can test alert handling with this.");
+			document.getElementById("dialogOutput").textContent = "Alert was displayed and dismissed.";
+		});
+
+		/* Confirm */
+		document.getElementById("btnConfirm").addEventListener("click", () => {
+			const result = confirm("Do you want to confirm this action?\nClick OK or Cancel.");
+			document.getElementById("dialogOutput").textContent = result
+				? "Confirm result: OK (true)"
+				: "Confirm result: Cancel (false)";
+		});
+
+		/* Prompt */
+		document.getElementById("btnPrompt").addEventListener("click", () => {
+			const result = prompt("Enter your name:", "");
+			const output = document.getElementById("dialogOutput");
+			if (result === null) {
+				output.textContent = "Prompt was cancelled.";
+			} else if (result.trim() === "") {
+				output.textContent = "Prompt returned empty string.";
+			} else {
+				output.textContent = "Prompt returned: \"" + result + "\"";
+			}
+		});
+
+		/* Child Window */
+		let childWin = null;
+
+		document.getElementById("btnChildWindow").addEventListener("click", () => {
+			if (childWin && !childWin.closed) {
+				childWin.focus();
+				document.getElementById("childWindowOutput").textContent = "Child window already open — focused it.";
+				return;
+			}
+
+			childWin = window.open("", "ChildWindow", "width=500,height=400,left=200,top=200");
+			if (!childWin) {
+				document.getElementById("childWindowOutput").textContent = "Popup was blocked by the browser.";
+				return;
+			}
+
+			childWin.document.write(
+				'<!DOCTYPE html><html><head><title>Child Window</title>' +
+				'<style>body{font-family:system-ui,sans-serif;margin:0;padding:2rem;background:linear-gradient(135deg,#eff6ff,#faf5ff);color:#1e293b;}' +
+				'h1{font-size:1.3rem;color:#4338ca;margin:0 0 0.75rem;}p{font-size:0.95rem;color:#475569;margin:0 0 1rem;}' +
+				'button{background:#2563eb;color:#fff;border:none;padding:0.5rem 1rem;border-radius:0.375rem;cursor:pointer;font-size:0.92rem;margin-right:0.5rem;}' +
+				'button:hover{background:#1d4ed8;}button.close{background:#dc2626;}button.close:hover{background:#b91c1c;}' +
+				'#childMsg{margin-top:1rem;padding:0.5rem;background:#dcfce7;border-radius:0.375rem;font-size:0.9rem;display:none;}</style></head>' +
+				'<body><h1>&#128424; Child Window</h1>' +
+				'<p>This is a separate child window opened from the parent. You can interact with elements here independently.</p>' +
+				'<button onclick="document.getElementById(\'childMsg\').style.display=\'block\'">Click Me</button>' +
+				'<button class="close" onclick="window.close()">Close Window</button>' +
+				'<div id="childMsg">&#10004; Button clicked inside child window!</div>' +
+				'</body></html>'
+			);
+			childWin.document.close();
+
+			document.getElementById("childWindowOutput").textContent = "Child window opened successfully!";
+		});
+
+		document.getElementById("btnCloseChild").addEventListener("click", () => {
+			const output = document.getElementById("childWindowOutput");
+			if (childWin && !childWin.closed) {
+				childWin.close();
+				output.textContent = "Child window has been closed.";
+			} else {
+				output.textContent = "No child window is currently open.";
+			}
+		});
+
+		/* ===================================================
+		   Date Picker
+		   =================================================== */
+		const dpInput    = document.getElementById("dpInput");
+		const dpCalendar = document.getElementById("dpCalendar");
+		const dpDays     = document.getElementById("dpDays");
+		const dpMonthYear= document.getElementById("dpMonthYear");
+		const dpOutput   = document.getElementById("dpOutput");
+		const monthNames = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+		const dayNames   = ["Su","Mo","Tu","We","Th","Fr","Sa"];
+
+		let dpYear, dpMonth, dpSelected = null;
+		const today = new Date();
+		dpYear  = today.getFullYear();
+		dpMonth = today.getMonth();
+
+		function renderCalendar() {
+			dpMonthYear.textContent = monthNames[dpMonth] + " " + dpYear;
+			let html = dayNames.map(d => '<span class="dp-day-name">' + d + '</span>').join("");
+			const firstDay  = new Date(dpYear, dpMonth, 1).getDay();
+			const daysInMon = new Date(dpYear, dpMonth + 1, 0).getDate();
+			const prevDays  = new Date(dpYear, dpMonth, 0).getDate();
+
+			/* Previous month trailing days */
+			for (let i = firstDay - 1; i >= 0; i--) {
+				html += '<button type="button" class="dp-day other-month" data-day="' + (prevDays - i) + '" data-offset="-1">' + (prevDays - i) + '</button>';
+			}
+			/* Current month */
+			for (let d = 1; d <= daysInMon; d++) {
+				let cls = "dp-day";
+				if (d === today.getDate() && dpMonth === today.getMonth() && dpYear === today.getFullYear()) cls += " today";
+				if (dpSelected && d === dpSelected.getDate() && dpMonth === dpSelected.getMonth() && dpYear === dpSelected.getFullYear()) cls += " selected";
+				html += '<button type="button" class="' + cls + '" data-day="' + d + '" data-offset="0">' + d + '</button>';
+			}
+			/* Next month leading days */
+			const totalCells = firstDay + daysInMon;
+			const remaining  = (7 - (totalCells % 7)) % 7;
+			for (let d = 1; d <= remaining; d++) {
+				html += '<button type="button" class="dp-day other-month" data-day="' + d + '" data-offset="1">' + d + '</button>';
+			}
+			dpDays.innerHTML = html;
+		}
+
+		renderCalendar();
+
+		/* Toggle calendar */
+		function toggleDP() { dpCalendar.classList.toggle("open"); }
+		document.getElementById("dpToggle").addEventListener("click", toggleDP);
+		dpInput.addEventListener("click", toggleDP);
+
+		/* Prev / Next month */
+		document.getElementById("dpPrev").addEventListener("click", () => {
+			dpMonth--;
+			if (dpMonth < 0) { dpMonth = 11; dpYear--; }
+			renderCalendar();
+		});
+
+		document.getElementById("dpNext").addEventListener("click", () => {
+			dpMonth++;
+			if (dpMonth > 11) { dpMonth = 0; dpYear++; }
+			renderCalendar();
+		});
+
+		/* Day click */
+		dpDays.addEventListener("click", (e) => {
+			const btn = e.target.closest(".dp-day");
+			if (!btn) return;
+			const offset = parseInt(btn.dataset.offset);
+			let selMonth = dpMonth + offset;
+			let selYear  = dpYear;
+			if (selMonth < 0)  { selMonth = 11; selYear--; }
+			if (selMonth > 11) { selMonth = 0;  selYear++; }
+			const day = parseInt(btn.dataset.day);
+			dpSelected = new Date(selYear, selMonth, day);
+			dpMonth = selMonth;
+			dpYear  = selYear;
+
+			const formatted = (dpSelected.getMonth() + 1).toString().padStart(2, '0') + '/' +
+				dpSelected.getDate().toString().padStart(2, '0') + '/' + dpSelected.getFullYear();
+			dpInput.value = formatted;
+			dpOutput.textContent = "Selected date: " + formatted + " (" + dpSelected.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) + ")";
+			renderCalendar();
+			dpCalendar.classList.remove("open");
+		});
+
+		/* Close calendar when clicking outside */
+		document.addEventListener("click", (e) => {
+			if (!e.target.closest(".datepicker-wrap")) {
+				dpCalendar.classList.remove("open");
+			}
+		});
+
+		/* ===================================================
+		   Drag & Drop
+		   =================================================== */
+		const dndSource = document.getElementById("dndSource");
+		const dndTarget = document.getElementById("dndTarget");
+		const dndOutput = document.getElementById("dndOutput");
+		let draggedEl = null;
+
+		function setupDndZone(zone) {
+			zone.addEventListener("dragstart", (e) => {
+				draggedEl = e.target.closest(".dnd-item");
+				if (draggedEl) {
+					draggedEl.classList.add("dragging");
+					e.dataTransfer.effectAllowed = "move";
+					e.dataTransfer.setData("text/plain", draggedEl.dataset.id);
+				}
+			});
+
+			zone.addEventListener("dragend", () => {
+				if (draggedEl) draggedEl.classList.remove("dragging");
+				draggedEl = null;
+			});
+
+			zone.addEventListener("dragover", (e) => {
+				e.preventDefault();
+				e.dataTransfer.dropEffect = "move";
+				zone.classList.add("drag-over");
+			});
+
+			zone.addEventListener("dragleave", () => {
+				zone.classList.remove("drag-over");
+			});
+
+			zone.addEventListener("drop", (e) => {
+				e.preventDefault();
+				zone.classList.remove("drag-over");
+				if (draggedEl && draggedEl.parentElement !== zone) {
+					zone.appendChild(draggedEl);
+					const srcCount = dndSource.querySelectorAll(".dnd-item").length;
+					const tgtCount = dndTarget.querySelectorAll(".dnd-item").length;
+					dndOutput.textContent = "Moved \"" + draggedEl.textContent.trim() + "\" — Available: " + srcCount + ", Dropped: " + tgtCount;
+				}
+			});
+		}
+
+		setupDndZone(dndSource);
+		setupDndZone(dndTarget);
+
+		/* ===================================================
+		   Slider
+		   =================================================== */
+		const sliderRange  = document.getElementById("sliderRange");
+		const sliderValue  = document.getElementById("sliderValue");
+		const sliderOutput = document.getElementById("sliderOutput");
+
+		sliderRange.addEventListener("input", () => {
+			const val = sliderRange.value;
+			sliderValue.textContent = val;
+			sliderOutput.textContent = "Current value: " + val;
+		});
+
+		/* ===================================================
+		   Mouse Hover
+		   =================================================== */
+		const hoverGrid    = document.getElementById("hoverGrid");
+		const hoverTooltip = document.getElementById("hoverTooltip");
+		const hoverOutput  = document.getElementById("hoverOutput");
+
+		hoverGrid.addEventListener("mouseover", (e) => {
+			const box = e.target.closest(".hover-box");
+			if (!box) return;
+			hoverTooltip.textContent = box.dataset.tooltip;
+			hoverTooltip.classList.add("visible");
+			const rect = box.getBoundingClientRect();
+			const parentRect = box.closest(".interact-card").getBoundingClientRect();
+			hoverTooltip.style.left = (rect.left - parentRect.left + rect.width / 2 - hoverTooltip.offsetWidth / 2) + "px";
+			hoverTooltip.style.top = (rect.top - parentRect.top - 35) + "px";
+			hoverOutput.textContent = "Hovering: " + box.dataset.color.charAt(0).toUpperCase() + box.dataset.color.slice(1) + " — " + box.dataset.tooltip;
+		});
+
+		hoverGrid.addEventListener("mouseout", (e) => {
+			const box = e.target.closest(".hover-box");
+			if (!box) return;
+			hoverTooltip.classList.remove("visible");
+			hoverOutput.textContent = "Hover over a box to see details.";
+		});
+
+	})();
+	</script>
+</body>
+</html>
