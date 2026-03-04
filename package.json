@@ -1,0 +1,23 @@
+{
+  "name": "webapplication",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "npx playwright test",
+    "test:chromium": "npx playwright test --project=chromium",
+    "test:firefox": "npx playwright test --project=firefox",
+    "test:webkit": "npx playwright test --project=webkit",
+    "test:headed": "npx playwright test --headed --project=chromium",
+    "test:debug": "npx playwright test --debug --project=chromium",
+    "test:report": "npx playwright show-report"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "@playwright/test": "^1.58.2",
+    "@types/node": "^25.3.3",
+    "typescript": "^5.9.3"
+  }
+}
