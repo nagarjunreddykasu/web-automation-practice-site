@@ -1840,17 +1840,21 @@
 		function renderProducts(list) {
 			productGrid.innerHTML = list
 				.map(
-					(p, i) =>
+					(p) => {
+						const idx = products.indexOf(p);
+						return (
 						'<div class="product-card">' +
 						'<div class="product-img">' + p.img + '</div>' +
 						'<div class="product-info">' +
 						"<h4>" + p.name + "</h4>" +
 						'<p class="price">$' + p.price.toFixed(2) + "</p>" +
 						'<div class="qty-ctrl">' +
-						'<button data-action="dec" data-idx="' + i + '">&minus;</button>' +
-						'<span id="qty-' + i + '">' + (cart[i] || 0) + "</span>" +
-						'<button data-action="inc" data-idx="' + i + '">+</button>' +
+						'<button data-action="dec" data-idx="' + idx + '">&minus;</button>' +
+						'<span id="qty-' + idx + '">' + (cart[idx] || 0) + "</span>" +
+						'<button data-action="inc" data-idx="' + idx + '">+</button>' +
 						"</div></div></div>"
+						);
+					}
 				)
 				.join("");
 		}
