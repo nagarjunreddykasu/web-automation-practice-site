@@ -486,6 +486,10 @@
 			font-size: 0.95rem;
 		}
 
+		.dropdown-group select[multiple] {
+			min-height: 9rem;
+		}
+
 		.dd-output {
 			margin-top: 1rem;
 			padding: 0.75rem;
@@ -1404,6 +1408,16 @@
 							<option>Puppeteer</option>
 						</select>
 					</div>
+					<div>
+						<label for="ddCourses">Courses</label>
+						<select id="ddCourses" multiple size="5">
+							<option>Playwright with TypeScript</option>
+							<option>Selenium WebDriver with Java</option>
+							<option>Cypress End-to-End Testing</option>
+							<option>API Testing with Postman</option>
+							<option>Test Automation Framework Design</option>
+						</select>
+					</div>
 				</div>
 				<div id="ddOutput" class="dd-output">Select values from the dropdowns above.</div>
 			</section>
@@ -1891,13 +1905,17 @@
 		/* ===================================================
 		   7. Dropdowns
 		   =================================================== */
-		const ddIds = ["ddCountry", "ddCurrency", "ddLanguage", "ddFramework"];
+		const ddIds = ["ddCountry", "ddCurrency", "ddLanguage", "ddFramework", "ddCourses"];
 		const ddOutput = document.getElementById("ddOutput");
 
 		function updateDdOutput() {
 			const vals = ddIds.map((id) => {
 				const el = document.getElementById(id);
-				return el.previousElementSibling.textContent + ": " + (el.value || "Not selected");
+				const selectedValues = Array.from(el.selectedOptions || []).map((opt) => opt.value).filter(Boolean);
+				const valueText = el.multiple
+					? (selectedValues.length ? selectedValues.join(", ") : "Not selected")
+					: (el.value || "Not selected");
+				return el.previousElementSibling.textContent + ": " + valueText;
 			});
 			ddOutput.textContent = vals.join(" | ");
 		}
